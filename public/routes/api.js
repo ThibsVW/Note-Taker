@@ -15,7 +15,7 @@ router.post("/api/notes" , function(req, res){
     }
 
     notes.push(req.body);
-    fs.writeFileSync('./db/db.json' , JSON.stringify(notes))
+    fs.writeFileSync('../db/db.json' , JSON.stringify(notes))
 
     res.json(notes);
 })
@@ -25,7 +25,7 @@ router.delete('/api/notes/:_id', function(req,res){
         return e.id != ID;
 
     });
-    fs.writeFileSync('./db/db.json' , JSON.stringify(notes))
+    fs.writeFileSync('../db/db.json' , JSON.stringify(notes))
     res.json(notes);
 });
 

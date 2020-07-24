@@ -9,8 +9,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-const apiRoutes = require("./routes/api");
-const htmlRoutes = require("./routes/htmljs");
+const apiRoutes = require("./public/routes/api");
+const htmlRoutes = require("./public/routes/htmljs");
 
 app.use(apiRoutes);
 app.use(htmlRoutes);
