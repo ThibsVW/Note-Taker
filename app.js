@@ -1,76 +1,52 @@
-const express = require("express")
-const path = require("path");
-const fs = require("fs");
-
-const staticDir = path.resolve(__dirname, "public");
-const dbDir = path.resolve(__dirname, "db");
-const dbFile = path.join(dbDir, "db.json");
-
-
-// Sets up the Express server
-const server = express();
+const express = require("express");
+const app = express();
+const path = require('path');
+const fs = require('fs');
+const noteData = require('./public/db/db.json');
 const PORT = process.env.PORT || 3000;
 
-// Sets up the Express server to handle data parsing and serve static files
-server.use(express.urlencoded({ extended: true }));
-server.use(express.json());
-server.use(express.static(staticDir));
-
-// Routes
-server.get("/", function (request, response) {
-    response.sendFile(path.join(staticDir, "index.html"));
-});
-
-server.get("/notes", function (request, response) {
-    response.sendFile(path.join(staticDir, "notes.html"));
-});
-
-server.get("/api/notes", function (request, response) {
-    fs.readFile(dbFile, 'utf8', (error, data) => {
-        if (error) throw error;
-        if (data) {
-            response.json(JSON.parse(data));
-        } else {
-            response.json([]);
-        }
-
-    });
-});
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
-server.post("/api/notes", (request, response) => {
-    const currentNote = { title: request.body.title, text: request.body.text };
-    fs.readFile(dbFile, 'utf8', (error, data) => {
-        if (error) throw error;
-        let savedNotes = data ? JSON.parse(data) : [];
-        savedNotes.push(currentNote);
-        savedNotes = savedNotes.map((note, index) => {
-            note.id = index + 1;
-            return note;
-        });
-        fs.writeFile(dbFile, JSON.stringify(savedNotes), error => {
-            if (error) throw error;
-            console.log(`New note with id = ${savedNotes.length} saved successfully`);
-            response.json(currentNote);
-        });
-    });
-});
+// Create routes the the HTML Pages using GET requests
 
-server.delete("/api/notes/:id", (request, response) => {
-    fs.readFile(dbFile, 'utf8', (error, data) => {
-        if (error) throw error;
-        let savedNotes = data ? JSON.parse(data) : [];
-        savedNotes = savedNotes.filter((note, index) => {
-            return note.id != request.params.id;
-        });
-        fs.writeFile(dbFile, JSON.stringify(savedNotes), error => {
-            if (error) throw error;
-            response.end();
-        });
-    });
-});
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/index.html"));
+})
 
-// Starts the server to begin listening
-server.listen(PORT, function () {
-    console.log("server listening on PORT " + PORT);
-});
+app.get("/notes", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/notes.html"));
+})
+
+app.get('/api/notes', (req, res) => {
+    res.json(noteData);
+})
+
+app.post('/api/notes', (req, res) => {
+    noteData.push(req.body);
+    noteData.forEach((note, i) => {
+        note.id = i + 1;
+    })
+    let newNote = JSON.stringify(noteData);
+    fs.writeFileSync('./public/db/db.json', newNote);
+
+    res.json(noteData);
+})
+
+app.delete('/api/notes/:id', (req, res) => {
+
+    let filtered = noteData.filter(note => note.id !== parseInt(req.params.id));
+    fs.writeFileSync('./public/db/db.json', JSON.stringify(filtered));
+
+    //alter the note data with the filtered results so when it sends the response back it is immediately showned on the front end
+    noteData = filtered;
+
+    res.json(noteData);
+
+})
+
+app.listen(PORT, () => {
+    console.log(`Listening on port: ${PORT}`);
+})
