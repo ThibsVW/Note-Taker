@@ -13,7 +13,7 @@ Run npm install to install all dependencies. To use the application locally, run
 
 ## heroku 
 
-[Note-Taker HUROKU](https://note-taker-by-thibs.herokuapp.com/)
+[Note-Taker HEROKU](https://note-taker-by-thibs.herokuapp.com/)
 
 ## Preview 
 
