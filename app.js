@@ -40,7 +40,6 @@ app.delete('/api/notes/:id', (req, res) => {
     let filtered = noteData.filter(note => note.id !== parseInt(req.params.id));
     fs.writeFileSync('./public/db/db.json', JSON.stringify(filtered));
 
-    //alter the note data with the filtered results so when it sends the response back it is immediately showned on the front end
     noteData = filtered;
 
     res.json(noteData);
