@@ -25,5 +25,3 @@ Run npm install to install all dependencies. To use the application locally, run
 
 ![noteTaker2](https://user-images.githubusercontent.com/64518932/88457380-6dd1ed00-ceb8-11ea-8223-0fcc5173cdca.JPG)
 
-
-## Business Context
